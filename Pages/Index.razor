@@ -1,0 +1,163 @@
+﻿@page "/"
+@using System;
+@using System.IO
+@using Plant_Disease_Classification.Data
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.Logging
+@inject ILogger<Index> Logger
+@inject IWebHostEnvironment Environment
+@inject MainService MainService
+
+<div class="d-flex flex-column align-items-center pt-4">
+    <h1 class="fs-1">Upload an image file to check if the plant is ill or not</h1>
+        <div style="width: 72.5%;">
+            <label class="fs-2">
+                Max file size:
+                <input value="@MegaBytes MB" readonly/>
+            </label>
+
+            <label class="fs-2">
+                Max allowed files:
+                <input value=@maxAllowedFiles readonly/>
+            </label>
+
+        <label class="fs-2">
+            <InputFile OnChange="@LoadFiles" accept=".jpg,.jpeg,.png" multiple />
+        </label>
+    </div>
+    @if (isLoading)
+    {
+        <p>Uploading...</p>
+    }
+    else
+    {
+        @foreach (var file in loadedFiles)
+        {
+            <ul>
+                <li>Name: @file.Name</li>
+                <li>Last modified: @file.LastModified.ToString()</li>
+                <li>Size (bytes): @file.Size</li>
+                <li>Content type: @file.ContentType</li>
+            </ul>
+        }
+    }
+
+    @if (wrongFilesUploaded) 
+    {
+        <h1>All files uploaded have to be either JPG or PNG</h1>
+    }
+
+    @if (predicted)
+    {
+        <img src="@image" width="400" />
+        @if (prediction == "Powdery")
+        {
+            <h1 class="p-2">The plant is most likely ill</h1>
+        } else {
+            <h1 class="p-2">The plant is in healthy condition</h1>
+        }
+    }
+</div>
+
+
+@code {
+    private List<IBrowserFile> loadedFiles = new();
+    private const int MegaBytesMultiplier = 1024 * 1024;
+    private const int MegaBytes = 3;
+    private long maxFileSize = MegaBytesMultiplier * MegaBytes;
+    private int maxAllowedFiles = 1;
+    private bool isLoading;
+    private bool wrongFilesUploaded;
+    private string path;
+    private bool predicted;
+    private string prediction;
+    private string image;
+    public async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        wrongFilesUploaded = false;
+        predicted = false;
+        loadedFiles.Clear();
+        ClearImageFiles();
+
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            try
+            {
+                if (file.ContentType != "image/jpeg" && file.ContentType != "image/png")
+                {
+                    wrongFilesUploaded = true;
+                    break;
+                }
+
+                loadedFiles.Add(file);
+
+                string trustedFileNameForFileStorage = Path.GetRandomFileName();
+
+                if (file.ContentType == "image/jpeg") 
+                {
+                    trustedFileNameForFileStorage += ".jpg";
+                }
+
+                if (file.ContentType == "image/png") 
+                {
+                    trustedFileNameForFileStorage += ".png";
+                }
+
+                path = Path.Combine(Environment.ContentRootPath, "Data", "imgs",
+                        trustedFileNameForFileStorage);
+
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                fs.Close();
+                MainService.ResizeImage(path, 4000, 2672);
+                MakePrediction(Path.Combine(Environment.ContentRootPath, "Data", "imgs"), true);
+
+                foreach (var loadedFile in loadedFiles) {
+                    image = await ReadFileAsDataUrl(loadedFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("File: {Filename} Error: {Error}", 
+                file.Name, ex.Message);
+            }
+        }
+
+        isLoading = false;
+    }
+
+    private async Task<string> ReadFileAsDataUrl(IBrowserFile file)
+    {
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            var bytes = memoryStream.ToArray();
+            var base64 = Convert.ToBase64String(bytes);
+            return $"data:{file.ContentType};base64,{base64}";
+        }
+    }
+
+    public void ClearImageFiles() {
+        string imageDirectory = Path.Combine(Environment.ContentRootPath, "Data", "imgs");
+        string[] files = Directory.GetFiles(imageDirectory);
+        foreach (var file in files) {
+            try
+            {
+                File.Delete(Path.Combine(imageDirectory, file));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+            }
+        }
+    }
+
+    public void MakePrediction(string path, bool useFolderNameAsLabel)
+    {
+        IEnumerable<ImageData> images = MainService.LoadImagesFromDirectory(folder: path, useFolderNameAsLabel: useFolderNameAsLabel);
+        
+        prediction = MainService.MakePrediction(images, path);
+        predicted = true;
+    }
+}

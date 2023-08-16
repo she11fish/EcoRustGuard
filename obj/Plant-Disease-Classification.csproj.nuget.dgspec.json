@@ -1,0 +1,102 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\wahee\\Programs\\projects\\Plant-Disease-Classification\\Plant-Disease-Classification.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\wahee\\Programs\\projects\\Plant-Disease-Classification\\Plant-Disease-Classification.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\wahee\\Programs\\projects\\Plant-Disease-Classification\\Plant-Disease-Classification.csproj",
+        "projectName": "Plant-Disease-Classification",
+        "projectPath": "C:\\Users\\wahee\\Programs\\projects\\Plant-Disease-Classification\\Plant-Disease-Classification.csproj",
+        "packagesPath": "C:\\Users\\wahee\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\wahee\\Programs\\projects\\Plant-Disease-Classification\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\wahee\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net7.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net7.0": {
+            "targetAlias": "net7.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "dependencies": {
+            "Microsoft.ML": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "Microsoft.ML.ImageAnalytics": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "Microsoft.ML.OnnxConverter": {
+              "target": "Package",
+              "version": "[0.20.1, )"
+            },
+            "Microsoft.ML.TensorFlow": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "Microsoft.ML.Vision": {
+              "target": "Package",
+              "version": "[2.0.1, )"
+            },
+            "SciSharp.TensorFlow.Redist": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "SixLabors.ImageSharp": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "System.Runtime.CompilerServices.Unsafe": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
