@@ -1,4 +1,4 @@
-﻿# Plant-Disease-Classification
+﻿# EcoRustGuard
 A website made with Blazor that detects if the plant in the given image is ill or not using Deep Learning Binary Image classification algorithm with ML.NET
 ## Prerequisites
 1. .NET SDK
