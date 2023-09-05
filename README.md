@@ -5,7 +5,7 @@ A website made with Blazor that detects if the plant in the given image is ill o
 2. Git
 ## How to install it locally
 1. Install the repository with `git clone https://github.com/she11fish/Plant-Disease-Classification.git`
-2. #### `cd Plant-Disease-Classification`
+2. #### `cd EcoRustGuard`
 3. #### `dotnet restore`
 4. #### `dotnet run`
 5. the terminal outputs the website link (mine was ### `http://localhost:5270/`)
